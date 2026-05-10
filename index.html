@@ -1,1474 +1,378 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIERS.MEDIA — DIGITAL AGENCY</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@100;300;400;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --cyan:#00ffe7;
-  --cyan2:#00bcd4;
-  --magenta:#ff003c;
-  --gold:#ffd700;
-  --dark:#000508;
-  --dark2:#020b12;
-  --white:#d0f5ff;
-  --muted:rgba(180,240,255,0.38);
-  --grid:rgba(0,255,231,0.04);
-}
-html{scroll-behavior:auto;}
-body{
-  background:var(--dark);
-  color:var(--white);
-  font-family:'Exo 2',sans-serif;
-  overflow-x:hidden;
-  cursor:none;
-}
-
-/* ── CUSTOM CURSOR ── */
-#cur{position:fixed;pointer-events:none;z-index:9999;top:0;left:0;}
-.cur-dot{
-position:absolute;width:6px;height:6px;
-background:var(–cyan);border-radius:50%;
-transform:translate(-50%,-50%);
-box-shadow:0 0 10px var(–cyan),0 0 20px var(–cyan);
-}
-.cur-ring{
-position:absolute;width:40px;height:40px;
-border:1px solid rgba(0,255,231,0.6);
-border-radius:50%;
-transform:translate(-50%,-50%);
-transition:transform .1s;
-}
-.cur-cross-h{
-position:absolute;width:16px;height:1px;
-background:rgba(0,255,231,0.4);
-transform:translate(-50%,-50%);
-}
-.cur-cross-v{
-position:absolute;width:1px;height:16px;
-background:rgba(0,255,231,0.4);
-transform:translate(-50%,-50%);
-}
-
-/* ── SCANLINES ── */
-body::after{
-content:’’;position:fixed;inset:0;pointer-events:none;z-index:8000;
-background:repeating-linear-gradient(
-to bottom,transparent 0,transparent 2px,
-rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px
-);
-}
-
-/* ── PROGRESS BAR ── */
-#progress{
-position:fixed;top:0;left:0;height:2px;
-background:linear-gradient(90deg,var(–magenta),var(–cyan),var(–gold));
-z-index:200;width:0%;
-box-shadow:0 0 8px var(–cyan);
-}
-
-/* ── CORNER HUD OVERLAYS ── */
-.hud-corner{
-position:fixed;pointer-events:none;z-index:150;
-width:80px;height:80px;
-}
-.hud-corner.tl{top:20px;left:20px;border-top:1px solid rgba(0,255,231,0.3);border-left:1px solid rgba(0,255,231,0.3);}
-.hud-corner.tr{top:20px;right:20px;border-top:1px solid rgba(0,255,231,0.3);border-right:1px solid rgba(0,255,231,0.3);}
-.hud-corner.bl{bottom:20px;left:20px;border-bottom:1px solid rgba(0,255,231,0.3);border-left:1px solid rgba(0,255,231,0.3);}
-.hud-corner.br{bottom:20px;right:20px;border-bottom:1px solid rgba(0,255,231,0.3);border-right:1px solid rgba(0,255,231,0.3);}
-#hud-time{
-position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-font-family:‘Share Tech Mono’,monospace;font-size:9px;letter-spacing:4px;
-color:rgba(0,255,231,0.25);pointer-events:none;z-index:150;
-}
-
-/* ── NAV ── */
-nav{
-position:fixed;top:0;left:0;right:0;z-index:100;
-display:flex;justify-content:space-between;align-items:center;
-padding:30px 60px;
-transition:background .5s,padding .4s,border-color .5s;
-border-bottom:1px solid transparent;
-}
-nav.scrolled{
-background:rgba(0,5,8,0.92);
-backdrop-filter:blur(24px);
-padding:16px 60px;
-border-bottom:1px solid rgba(0,255,231,0.06);
-}
-.nav-logo{
-font-family:‘Orbitron’,monospace;
-font-size:20px;letter-spacing:4px;font-weight:900;
-color:var(–white);text-decoration:none;
-position:relative;
-}
-.nav-logo .dot{color:var(–cyan);text-shadow:0 0 12px var(–cyan);}
-.nav-logo::before{
-content:’[SYS:ONLINE]’;
-position:absolute;top:-14px;left:0;
-font-family:‘Share Tech Mono’,monospace;
-font-size:7px;letter-spacing:3px;color:rgba(0,255,231,0.35);
-}
-.nav-links{display:flex;gap:36px;list-style:none;align-items:center;}
-.nav-links a{
-font-family:‘Share Tech Mono’,monospace;
-font-size:10px;letter-spacing:3px;text-transform:uppercase;
-color:var(–muted);text-decoration:none;
-transition:color .3s;position:relative;
-}
-.nav-links a::before{
-content:attr(data-num);
-position:absolute;top:-12px;left:0;
-font-size:7px;color:rgba(0,255,231,0.3);letter-spacing:2px;
-}
-.nav-links a:hover{color:var(–cyan);}
-.nav-cta{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:3px;text-transform:uppercase;
-padding:9px 22px;border:1px solid rgba(0,255,231,0.4);
-color:var(–cyan);text-decoration:none;
-transition:background .3s,box-shadow .3s;
-position:relative;overflow:hidden;
-}
-.nav-cta::before{
-content:’’;position:absolute;inset:0;
-background:rgba(0,255,231,0.07);
-transform:scaleX(0);transform-origin:left;transition:transform .3s;
-}
-.nav-cta:hover{box-shadow:0 0 18px rgba(0,255,231,0.15);}
-.nav-cta:hover::before{transform:scaleX(1);}
-
-section{position:relative;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-
-/* ══════════════════════════════
-HERO
-══════════════════════════════ */
-#hero{min-height:100vh;background:#000;}
-#hero-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.hero-content{position:relative;z-index:2;text-align:center;padding:0 24px;max-width:1100px;}
-
-.hero-sys-header{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:6px;color:rgba(0,255,231,0.5);
-margin-bottom:40px;
-opacity:0;animation:fadeUp .8s .2s forwards;
-display:flex;align-items:center;justify-content:center;gap:20px;
-}
-.sys-line{flex:1;max-width:60px;height:1px;background:linear-gradient(90deg,transparent,var(–cyan));}
-.sys-line.r{background:linear-gradient(90deg,var(–cyan),transparent);}
-
-.hero-title{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(56px,11vw,160px);
-font-weight:900;
-line-height:.88;letter-spacing:2px;
-opacity:0;animation:fadeUp 1s .5s forwards;
-}
-.hero-title .line1{display:block;}
-.hero-title .line2{
-display:block;
-color:var(–cyan);
-text-shadow:0 0 40px rgba(0,255,231,0.5),0 0 80px rgba(0,255,231,0.2);
-position:relative;
-}
-.hero-title .line3{
-display:block;
--webkit-text-stroke:1px rgba(0,255,231,0.25);
-color:transparent;
-position:relative;
-}
-
-/* glitch */
-.glitch{position:relative;display:inline-block;}
-.glitch::before,.glitch::after{
-content:attr(data-text);
-position:absolute;inset:0;
-font-family:inherit;font-size:inherit;font-weight:inherit;
-letter-spacing:inherit;line-height:inherit;
-}
-.glitch::before{color:var(–magenta);animation:gA 5s infinite;left:3px;clip-path:polygon(0 0,100% 0,100% 35%,0 35%);}
-.glitch::after{color:var(–cyan);animation:gB 5s infinite;left:-3px;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%);}
-@keyframes gA{
-0%,85%,100%{opacity:0;transform:translateX(0);}
-88%{opacity:1;clip-path:polygon(0 10%,100% 10%,100% 45%,0 45%);transform:translateX(-4px);}
-91%{opacity:1;clip-path:polygon(0 55%,100% 55%,100% 75%,0 75%);transform:translateX(4px);}
-94%{opacity:0;}
-}
-@keyframes gB{
-0%,87%,100%{opacity:0;transform:translateX(0);}
-89%{opacity:1;clip-path:polygon(0 60%,100% 60%,100% 85%,0 85%);transform:translateX(3px);}
-92%{opacity:1;clip-path:polygon(0 25%,100% 25%,100% 50%,0 50%);transform:translateX(-3px);}
-95%{opacity:0;}
-}
-
-.hero-sub{
-font-family:‘Exo 2’,sans-serif;
-font-size:clamp(13px,1.6vw,17px);font-weight:100;
-letter-spacing:5px;color:var(–muted);
-margin-top:30px;max-width:600px;margin-inline:auto;
-text-transform:uppercase;
-opacity:0;animation:fadeUp .8s .9s forwards;
-}
-
-.hero-ctas{
-display:flex;gap:18px;justify-content:center;
-margin-top:52px;flex-wrap:wrap;
-opacity:0;animation:fadeUp .8s 1.2s forwards;
-}
-.btn-primary{
-padding:14px 48px;
-background:transparent;
-border:1px solid var(–cyan);
-font-family:‘Orbitron’,monospace;font-size:10px;letter-spacing:4px;
-color:var(–cyan);text-decoration:none;
-position:relative;overflow:hidden;
-transition:color .35s,box-shadow .35s;
-text-transform:uppercase;
-clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
-}
-.btn-primary::before{
-content:’’;position:absolute;inset:0;
-background:var(–cyan);
-transform:scaleX(0);transform-origin:left;transition:transform .35s;
-}
-.btn-primary:hover{color:#000;box-shadow:0 0 30px rgba(0,255,231,0.3);}
-.btn-primary:hover::before{transform:scaleX(1);}
-.btn-primary span{position:relative;z-index:1;}
-
-.btn-ghost{
-padding:14px 48px;
-border:1px solid rgba(0,255,231,0.18);
-font-family:‘Orbitron’,monospace;font-size:10px;letter-spacing:4px;
-color:var(–muted);text-decoration:none;
-transition:border-color .3s,color .3s,box-shadow .3s;
-text-transform:uppercase;
-clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
-}
-.btn-ghost:hover{border-color:rgba(0,255,231,0.6);color:var(–cyan);box-shadow:0 0 20px rgba(0,255,231,0.08);}
-
-.scroll-hint{
-position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-display:flex;flex-direction:column;align-items:center;gap:12px;
-opacity:0;animation:fadeUp .8s 1.8s forwards;
-}
-.scroll-hint span{font-family:‘Share Tech Mono’,monospace;font-size:8px;letter-spacing:5px;color:rgba(0,255,231,0.3);}
-.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(–cyan),transparent);animation:spulse 2s infinite;}
-
-/* ══════════════════════════════
-HUD STRIP
-══════════════════════════════ */
-#hud-strip{
-min-height:auto;
-background:#000;
-border-top:1px solid rgba(0,255,231,0.06);
-border-bottom:1px solid rgba(0,255,231,0.06);
-position:relative;
-}
-.hud-strip-bg{
-position:absolute;inset:0;
-background:repeating-linear-gradient(
-90deg,transparent 0,transparent 60px,
-rgba(0,255,231,0.02) 60px,rgba(0,255,231,0.02) 61px
-);
-}
-.hud-inner{
-position:relative;z-index:1;
-width:100%;display:flex;justify-content:space-around;align-items:center;
-padding:36px 60px;flex-wrap:wrap;gap:24px;
-}
-.hud-item{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;}
-.hud-item::before{
-content:‘◈’;
-font-size:8px;color:var(–cyan);opacity:.4;
-margin-bottom:2px;
-}
-.hud-num{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(38px,5vw,58px);line-height:1;font-weight:900;
-color:var(–cyan);
-text-shadow:0 0 20px rgba(0,255,231,0.4),0 0 60px rgba(0,255,231,0.1);
-}
-.hud-label{
-font-family:‘Share Tech Mono’,monospace;
-font-size:8px;letter-spacing:4px;text-transform:uppercase;
-color:rgba(0,255,231,0.35);
-}
-.hud-divider{width:1px;height:70px;background:linear-gradient(to bottom,transparent,rgba(0,255,231,0.15),transparent);}
-
-/* ══════════════════════════════
-WHY SECTION
-══════════════════════════════ */
-#why{min-height:100vh;background:var(–dark2);}
-#why-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.why-inner{
-position:relative;z-index:2;
-display:grid;grid-template-columns:1fr 1fr;
-gap:80px;max-width:1200px;padding:130px 60px;align-items:center;
-}
-.section-tag{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:5px;text-transform:uppercase;
-color:var(–cyan);margin-bottom:20px;
-display:flex;align-items:center;gap:10px;
-}
-.section-tag::before{content:’>>>’;color:var(–magenta);opacity:.7;}
-.section-title{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(36px,5vw,72px);
-line-height:.92;letter-spacing:1px;margin-bottom:28px;font-weight:900;
-}
-.section-title .c{color:var(–cyan);}
-.section-body{font-size:14px;line-height:2;color:var(–muted);font-weight:300;margin-bottom:20px;}
-
-.why-cards{display:flex;flex-direction:column;gap:2px;}
-.why-card{
-background:rgba(0,255,231,0.018);
-border-left:2px solid rgba(0,255,231,0.3);
-border-bottom:1px solid rgba(0,255,231,0.06);
-padding:26px 28px;
-transition:background .3s,transform .3s,border-left-color .3s;
-position:relative;overflow:hidden;
-cursor:default;
-}
-.why-card::before{
-content:’’;position:absolute;top:0;left:0;bottom:0;
-width:2px;background:var(–cyan);
-box-shadow:0 0 12px var(–cyan);
-opacity:0;transition:opacity .3s;
-}
-.why-card:hover{background:rgba(0,255,231,0.04);transform:translateX(6px);}
-.why-card:hover::before{opacity:1;}
-.why-card::after{
-content:’’;position:absolute;top:-50%;right:-10px;
-width:1px;height:200%;
-background:linear-gradient(to bottom,transparent,rgba(0,255,231,0.08),transparent);
-transition:right .4s;
-}
-.why-card:hover::after{right:10px;}
-.why-card-num{
-font-family:‘Share Tech Mono’,monospace;
-font-size:8px;letter-spacing:3px;color:var(–magenta);
-opacity:.6;margin-bottom:8px;
-}
-.why-card-title{
-font-family:‘Orbitron’,monospace;
-font-size:12px;letter-spacing:2px;text-transform:uppercase;
-color:var(–white);margin-bottom:8px;font-weight:700;
-}
-.why-card-body{font-size:13px;color:var(–muted);line-height:1.8;font-weight:300;}
-
-/* ══════════════════════════════
-FOUNDERS
-══════════════════════════════ */
-#founders{min-height:100vh;background:#000;}
-#founders-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.founders-inner{
-position:relative;z-index:2;
-max-width:1200px;padding:130px 60px;width:100%;
-}
-.founders-grid{
-display:grid;grid-template-columns:1fr 1fr;
-gap:28px;margin-top:60px;
-}
-.founder-card{
-border:1px solid rgba(0,255,231,0.1);
-padding:48px 42px;position:relative;overflow:hidden;
-transition:border-color .4s,transform .4s;
-background:rgba(0,255,231,0.01);
-clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
-}
-.founder-card:hover{
-border-color:rgba(0,255,231,0.3);
-transform:translateY(-6px);
-}
-.founder-scan{
-position:absolute;top:0;left:0;right:0;height:2px;
-background:linear-gradient(90deg,transparent,var(–cyan),transparent);
-animation:scan 5s linear infinite;opacity:0;transition:opacity .4s;
-}
-.founder-card:hover .founder-scan{opacity:1;}
-@keyframes scan{0%{top:0;opacity:0;}5%{opacity:1;}95%{opacity:1;}100%{top:100%;opacity:0;}}
-
-.founder-card::before{
-content:’’;
-position:absolute;top:0;right:0;
-width:0;height:0;
-border-top:20px solid rgba(0,255,231,0.12);
-border-left:20px solid transparent;
-}
-.founder-card::after{
-content:’’;
-position:absolute;bottom:0;left:0;
-width:0;height:0;
-border-bottom:20px solid rgba(0,255,231,0.12);
-border-right:20px solid transparent;
-}
-
-.founder-id{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:4px;color:var(–cyan);
-margin-bottom:6px;opacity:.5;
-}
-.founder-name{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(28px,3.5vw,46px);letter-spacing:1px;line-height:1;
-margin-bottom:4px;font-weight:900;
-}
-.founder-role{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:4px;text-transform:uppercase;
-color:var(–magenta);margin-bottom:26px;opacity:.8;
-}
-.founder-body{font-size:13px;line-height:1.9;color:var(–muted);font-weight:300;}
-.founder-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;}
-.tag{
-font-family:‘Share Tech Mono’,monospace;
-font-size:8px;letter-spacing:3px;
-border:1px solid rgba(0,255,231,0.2);color:var(–cyan);
-padding:5px 13px;
-clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
-}
-
-/* ══════════════════════════════
-SERVICES
-══════════════════════════════ */
-#services{min-height:100vh;background:var(–dark2);}
-#services-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.services-inner{
-position:relative;z-index:2;
-max-width:1200px;padding:130px 60px;width:100%;text-align:center;
-}
-.services-grid{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:1px;margin-top:60px;
-background:rgba(0,255,231,0.05);
-}
-.service-card{
-background:var(–dark2);
-padding:42px 30px;text-align:left;
-position:relative;overflow:hidden;
-opacity:0;transform:translateY(40px);
-transition:opacity .7s,transform .7s,background .3s;
-}
-.service-card.visible{opacity:1;transform:translateY(0);}
-.service-card:hover{background:rgba(0,255,231,0.025);}
-.service-card::before{
-content:’’;position:absolute;inset:0;
-background:linear-gradient(135deg,rgba(0,255,231,0.04),transparent 60%);
-opacity:0;transition:opacity .4s;
-}
-.service-card:hover::before{opacity:1;}
-.service-corner-tl{
-position:absolute;top:0;left:0;
-width:16px;height:16px;
-border-top:1px solid rgba(0,255,231,0.4);
-border-left:1px solid rgba(0,255,231,0.4);
-transition:width .3s,height .3s;
-}
-.service-corner-br{
-position:absolute;bottom:0;right:0;
-width:16px;height:16px;
-border-bottom:1px solid rgba(0,255,231,0.4);
-border-right:1px solid rgba(0,255,231,0.4);
-transition:width .3s,height .3s;
-}
-.service-card:hover .service-corner-tl,
-.service-card:hover .service-corner-br{width:30px;height:30px;}
-
-.service-num{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;letter-spacing:3px;color:var(–cyan);
-opacity:.35;margin-bottom:18px;
-}
-.service-icon{
-font-size:22px;margin-bottom:14px;
-filter:drop-shadow(0 0 6px var(–cyan));
-}
-.service-title{
-font-family:‘Orbitron’,monospace;
-font-size:13px;letter-spacing:2px;text-transform:uppercase;
-color:var(–white);font-weight:700;margin-bottom:12px;
-}
-.service-body{font-size:13px;color:var(–muted);line-height:1.8;font-weight:300;}
-
-/* ══════════════════════════════
-MATTERS
-══════════════════════════════ */
-#matters{min-height:100vh;background:#000;}
-#matters-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.matters-inner{
-position:relative;z-index:2;
-max-width:1150px;padding:130px 60px;width:100%;
-display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
-}
-.big-quote{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(44px,6.5vw,96px);
-line-height:.9;letter-spacing:1px;font-weight:900;
-}
-.big-quote .c{color:var(–cyan);}
-.facts-list{list-style:none;display:flex;flex-direction:column;gap:0;}
-.facts-list li{
-display:flex;gap:20px;align-items:flex-start;
-padding:22px 0;
-border-bottom:1px solid rgba(0,255,231,0.05);
-font-size:13px;color:var(–muted);line-height:1.8;
-transition:border-color .3s,background .3s;
-position:relative;
-}
-.facts-list li:hover{border-bottom-color:rgba(0,255,231,0.2);}
-.fact-icon{
-font-family:‘Share Tech Mono’,monospace;
-font-size:9px;color:var(–cyan);margin-top:3px;flex-shrink:0;opacity:.6;
-border:1px solid rgba(0,255,231,0.2);padding:4px 6px;
-}
-.fact-bold{
-color:var(–white);font-weight:600;display:block;margin-bottom:4px;
-font-family:‘Orbitron’,monospace;
-font-size:11px;letter-spacing:2px;text-transform:uppercase;
-}
-
-/* ══════════════════════════════
-REVIEWS
-══════════════════════════════ */
-#reviews{
-min-height:auto;padding:110px 0;
-background:var(–dark2);overflow:hidden;
-}
-.reviews-header{text-align:center;padding:0 60px 60px;position:relative;z-index:2;}
-.reviews-track-outer{overflow:hidden;position:relative;}
-.reviews-track-outer::before,.reviews-track-outer::after{
-content:’’;position:absolute;top:0;bottom:0;width:200px;z-index:3;pointer-events:none;
-}
-.reviews-track-outer::before{left:0;background:linear-gradient(90deg,var(–dark2),transparent);}
-.reviews-track-outer::after{right:0;background:linear-gradient(-90deg,var(–dark2),transparent);}
-.reviews-track{
-display:flex;gap:20px;
-animation:rscroll 36s linear infinite;
-width:max-content;padding:14px 0;
-}
-.reviews-track:hover{animation-play-state:paused;}
-@keyframes rscroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.review-card{
-background:rgba(0,255,231,0.015);
-border:1px solid rgba(0,255,231,0.08);
-padding:34px 30px;width:370px;flex-shrink:0;
-position:relative;overflow:hidden;
-transition:border-color .3s;
-clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
-}
-.review-card:hover{border-color:rgba(0,255,231,0.25);}
-.review-card::before{
-content:’’;position:absolute;top:0;left:0;right:0;height:1px;
-background:linear-gradient(90deg,transparent,var(–cyan),transparent);
-opacity:0;transition:opacity .3s;
-}
-.review-card:hover::before{opacity:1;}
-.review-stars{font-size:11px;letter-spacing:4px;color:var(–gold);margin-bottom:16px;text-shadow:0 0 8px rgba(255,215,0,.4);}
-.review-text{font-size:13px;line-height:1.9;color:rgba(180,240,255,0.6);font-style:italic;margin-bottom:22px;font-weight:300;}
-.review-author{display:flex;align-items:center;gap:14px;}
-.review-avatar{
-width:40px;height:40px;
-background:rgba(0,255,231,0.06);
-border:1px solid rgba(0,255,231,0.2);
-display:flex;align-items:center;justify-content:center;
-font-family:‘Orbitron’,monospace;font-size:12px;color:var(–cyan);font-weight:700;
-clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-}
-.review-name{font-family:‘Orbitron’,monospace;font-size:11px;letter-spacing:2px;font-weight:700;}
-.review-company{font-family:‘Share Tech Mono’,monospace;font-size:9px;color:var(–muted);margin-top:3px;}
-
-/* ══════════════════════════════
-CONTACT
-══════════════════════════════ */
-#contact{min-height:100vh;background:#000;}
-#contact-canvas{position:absolute;inset:0;width:100%;height:100%;}
-.contact-inner{
-position:relative;z-index:2;
-max-width:900px;padding:130px 60px;width:100%;text-align:center;
-}
-.contact-title{
-font-family:‘Orbitron’,monospace;
-font-size:clamp(50px,10vw,140px);line-height:.85;
-letter-spacing:2px;margin-bottom:28px;font-weight:900;
-}
-.contact-title .c{
-color:var(–cyan);
-text-shadow:0 0 40px rgba(0,255,231,0.4),0 0 100px rgba(0,255,231,0.15);
-}
-.contact-sub{
-font-size:15px;color:var(–muted);max-width:500px;
-margin:0 auto 52px;line-height:1.9;font-weight:300;
-}
-.contact-methods{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;}
-.contact-link{
-display:flex;align-items:center;gap:14px;
-padding:18px 36px;
-border:1px solid rgba(0,255,231,0.18);
-text-decoration:none;color:var(–white);
-font-family:‘Share Tech Mono’,monospace;font-size:10px;letter-spacing:3px;
-text-transform:uppercase;
-transition:border-color .3s,color .3s,box-shadow .3s;
-position:relative;overflow:hidden;
-clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
-}
-.contact-link::before{
-content:’’;position:absolute;inset:0;
-background:rgba(0,255,231,0.05);
-transform:scaleX(0);transform-origin:left;transition:transform .35s;
-}
-.contact-link:hover{border-color:var(–cyan);color:var(–cyan);box-shadow:0 0 24px rgba(0,255,231,0.1);}
-.contact-link:hover::before{transform:scaleX(1);}
-.contact-link span{position:relative;z-index:1;}
-
-footer{
-background:var(–dark);
-border-top:1px solid rgba(0,255,231,0.05);
-padding:34px 60px;
-display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
-}
-.footer-logo{font-family:‘Orbitron’,monospace;font-size:18px;letter-spacing:4px;font-weight:900;}
-.footer-logo .dot{color:var(–cyan);}
-.footer-copy{font-family:‘Share Tech Mono’,monospace;font-size:9px;letter-spacing:2px;color:var(–muted);}
-.footer-ig{font-family:‘Share Tech Mono’,monospace;font-size:9px;letter-spacing:3px;color:var(–cyan);text-decoration:none;text-transform:uppercase;}
-
-/* ── REVEAL ── */
-.reveal{
-opacity:0;transform:translateY(40px);
-transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);
-}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.rd1{transition-delay:.1s;}.rd2{transition-delay:.22s;}
-.rd3{transition-delay:.36s;}.rd4{transition-delay:.5s;}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-@keyframes spulse{0%,100%{opacity:.3;}50%{opacity:1;}}
-
-/* grid overlay */
-.grid-overlay{
-position:absolute;inset:0;pointer-events:none;
-background-image:
-linear-gradient(rgba(0,255,231,0.025) 1px,transparent 1px),
-linear-gradient(90deg,rgba(0,255,231,0.025) 1px,transparent 1px);
-background-size:60px 60px;
-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
-}
-
-@media(max-width:900px){
-nav{padding:18px 24px;}.nav-links{display:none;}
-nav.scrolled{padding:12px 24px;}
-.why-inner,.founders-grid,.services-grid,.matters-inner{grid-template-columns:1fr;}
-.hud-divider{display:none;}
-.hud-inner{padding:24px;}
-footer{flex-direction:column;text-align:center;}
-.hud-corner{display:none;}
-}
-</style>
-
-</head>
-<body>
-
-<!-- CURSOR -->
-
-<div id="cur">
-  <div class="cur-dot"></div>
-  <div class="cur-ring"></div>
-  <div class="cur-cross-h"></div>
-  <div class="cur-cross-v"></div>
-</div>
-
-<!-- PROGRESS -->
-
-<div id="progress"></div>
-
-<!-- HUD CORNERS -->
-
-<div class="hud-corner tl"></div>
-<div class="hud-corner tr"></div>
-<div class="hud-corner bl"></div>
-<div class="hud-corner br"></div>
-<div id="hud-time"></div>
-
-<!-- NAV -->
-
-<nav id="navbar">
-  <a class="nav-logo" href="#">SIERS<span class="dot">.</span>MEDIA</a>
-  <ul class="nav-links">
-    <li><a href="#why" data-num="01">WHY</a></li>
-    <li><a href="#founders" data-num="02">TEAM</a></li>
-    <li><a href="#services" data-num="03">SERVICES</a></li>
-    <li><a href="#reviews" data-num="04">REVIEWS</a></li>
-    <li><a href="#contact" data-num="05" class="nav-cta">CONTACT</a></li>
-  </ul>
-</nav>
-
-<!-- ═══ HERO ═══ -->
-
-<section id="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <div class="hero-sys-header">
-      <div class="sys-line"></div>
-      WEB DEVELOPMENT AGENCY // SYSTEM ONLINE
-      <div class="sys-line r"></div>
-    </div>
-    <h1 class="hero-title">
-      <span class="line1 glitch" data-text="WE BUILD">WE BUILD</span>
-      <span class="line2">WEBSITES</span>
-      <span class="line3">THAT HIT.</span>
-    </h1>
-    <p class="hero-sub">Premium digital experiences engineered for businesses ready to dominate their space.</p>
-    <div class="hero-ctas">
-      <a href="#contact" class="btn-primary" id="start-project-btn"><span>► START YOUR PROJECT</span></a>
-      <a href="#services" class="btn-ghost" id="view-services-btn">VIEW SERVICES ◈</a>
-    </div>
-  </div>
-  <div class="scroll-hint">
-    <span>SCROLL.DOWN</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- ═══ HUD STRIP ═══ -->
-
-<section id="hud-strip">
-  <div class="hud-strip-bg"></div>
-  <div class="hud-inner">
-    <div class="hud-item">
-      <div class="hud-num" data-target="15">0</div>
-      <div class="hud-label">CLIENTS WORLDWIDE</div>
-    </div>
-    <div class="hud-divider"></div>
-    <div class="hud-item">
-      <div class="hud-num" data-target="3">0</div>
-      <div class="hud-label">YEARS ACTIVE</div>
-    </div>
-    <div class="hud-divider"></div>
-    <div class="hud-item">
-      <div class="hud-num">100%</div>
-      <div class="hud-label">5-STAR RATED</div>
-    </div>
-    <div class="hud-divider"></div>
-    <div class="hud-item">
-      <div class="hud-num">∞</div>
-      <div class="hud-label">CREATIVE RANGE</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ WHY ═══ -->
-
-<section id="why">
-  <canvas id="why-canvas"></canvas>
-  <div class="grid-overlay"></div>
-  <div class="why-inner">
-    <div>
-      <div class="section-tag reveal">WHY IT MATTERS</div>
-      <h2 class="section-title reveal rd1">YOUR SITE IS YOUR<br><span class="c">FIRST STRIKE.</span></h2>
-      <p class="section-body reveal rd2">Before a customer calls, before they walk through your door — they've already made a decision about your business based on what they see online.</p>
-      <p class="section-body reveal rd3">A weak site costs you clients you never even knew you lost. We make sure that never happens.</p>
-    </div>
-    <div class="why-cards">
-      <div class="why-card reveal rd1">
-        <div class="why-card-num">// NODE_01</div>
-        <div class="why-card-title">First Impressions Are Digital</div>
-        <div class="why-card-body">75% of consumers judge credibility by website design. Outdated = untrustworthy. Every second your old site is live, you're losing business.</div>
-      </div>
-      <div class="why-card reveal rd2">
-        <div class="why-card-num">// NODE_02</div>
-        <div class="why-card-title">Your 24/7 Sales Engine</div>
-        <div class="why-card-body">A great website generates leads, answers questions, and closes deals while you sleep. It's the hardest-working asset your business can have.</div>
-      </div>
-      <div class="why-card reveal rd3">
-        <div class="why-card-num">// NODE_03</div>
-        <div class="why-card-title">Built to Convert, Not Just Look Good</div>
-        <div class="why-card-body">Beautiful without strategy is just art. We engineer every layout, interaction, and word to turn visitors into paying clients.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ FOUNDERS ═══ -->
-
-<section id="founders">
-  <canvas id="founders-canvas"></canvas>
-  <div class="founders-inner">
-    <div class="section-tag reveal">// THE TEAM</div>
-    <h2 class="section-title reveal rd1">MEET THE<br><span class="c">FOUNDERS.</span></h2>
-    <div class="founders-grid">
-      <div class="founder-card reveal rd2">
-        <div class="founder-scan"></div>
-        <div class="founder-id">AGENT_01 // IDENTITY CONFIRMED</div>
-        <div class="founder-name">Sier Lopez</div>
-        <div class="founder-role">◈ Co-Founder & Lead Developer</div>
-        <div class="founder-body">3+ years engineering digital experiences for businesses across the globe. Sier brings a technical edge combined with an obsession for getting the details right — from pixel-perfect layouts to blazing-fast performance. He's built for companies across multiple industries and every project has one goal: results.</div>
-        <div class="founder-tags">
-          <span class="tag">WEB DEV</span>
-          <span class="tag">UI/UX</span>
-          <span class="tag">STRATEGY</span>
-        </div>
-      </div>
-      <div class="founder-card reveal rd3">
-        <div class="founder-scan"></div>
-        <div class="founder-id">AGENT_02 // IDENTITY CONFIRMED</div>
-        <div class="founder-name">Brandon Sumi</div>
-        <div class="founder-role">◈ Co-Founder & Creative Director</div>
-        <div class="founder-body">3+ years turning complex ideas into websites that make people stop scrolling. Brandon leads the creative direction — bringing cinematic design, motion, and storytelling to every build. He's collaborated with brands worldwide, always asking the same question: how do we make this unforgettable?</div>
-        <div class="founder-tags">
-          <span class="tag">CREATIVE</span>
-          <span class="tag">ANIMATION</span>
-          <span class="tag">FRONTEND</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ SERVICES ═══ -->
-
-<section id="services">
-  <canvas id="services-canvas"></canvas>
-  <div class="grid-overlay"></div>
-  <div class="services-inner">
-    <div class="section-tag reveal" style="justify-content:center;">// WHAT WE DO</div>
-    <h2 class="section-title reveal rd1">OUR <span class="c">SERVICES.</span></h2>
-    <div class="services-grid">
-      <div class="service-card" style="transition-delay:.05s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 01 ] ///</div>
-        <div class="service-icon">⬡</div>
-        <div class="service-title">Custom Web Design</div>
-        <div class="service-body">No templates. No shortcuts. Every site is engineered from zero, designed specifically for your brand and built to stop people mid-scroll.</div>
-      </div>
-      <div class="service-card" style="transition-delay:.18s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 02 ] ///</div>
-        <div class="service-icon">⬢</div>
-        <div class="service-title">Web Development</div>
-        <div class="service-body">Clean, fast, scalable code. Whether it's a landing page or a full platform, we build it to perform under pressure and grow with you.</div>
-      </div>
-      <div class="service-card" style="transition-delay:.32s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 03 ] ///</div>
-        <div class="service-icon">◈</div>
-        <div class="service-title">Mobile Optimization</div>
-        <div class="service-body">60%+ of traffic is mobile. Every build we ship is flawless on any device. If it doesn't work on a phone, it doesn't ship.</div>
-      </div>
-      <div class="service-card" style="transition-delay:.46s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 04 ] ///</div>
-        <div class="service-icon">◊</div>
-        <div class="service-title">SEO Foundation</div>
-        <div class="service-body">Built-in search optimization so you actually get found. A beautiful site no one can find is a billboard in the desert.</div>
-      </div>
-      <div class="service-card" style="transition-delay:.60s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 05 ] ///</div>
-        <div class="service-icon">✦</div>
-        <div class="service-title">Cinematic Animations</div>
-        <div class="service-body">Scroll effects, particle systems, WebGL — the kind of motion design that makes your visitors say wow out loud. This is our signature.</div>
-      </div>
-      <div class="service-card" style="transition-delay:.74s">
-        <div class="service-corner-tl"></div><div class="service-corner-br"></div>
-        <div class="service-num">[ 06 ] ///</div>
-        <div class="service-icon">⟁</div>
-        <div class="service-title">Ongoing Support</div>
-        <div class="service-body">We don't disappear after launch. We stay in your corner — maintaining, updating, and evolving your site as your business scales.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ MATTERS ═══ -->
-
-<section id="matters">
-  <canvas id="matters-canvas"></canvas>
-  <div class="matters-inner">
-    <div>
-      <div class="section-tag reveal">// DATA INTEL</div>
-      <div class="big-quote reveal rd1">WHAT A<br>GREAT SITE<br><span class="c">ACTUALLY<br>DOES.</span></div>
-    </div>
-    <ul class="facts-list">
-      <li class="reveal rd1">
-        <span class="fact-icon">01</span>
-        <div>
-          <span class="fact-bold">Credibility Is Visual</span>
-          94% of first impressions are design-related. If your site looks rough, people assume your whole operation is rough — regardless of how good you actually are.
-        </div>
-      </li>
-      <li class="reveal rd2">
-        <span class="fact-icon">02</span>
-        <div>
-          <span class="fact-bold">Speed Kills — Or Converts</span>
-          A 1-second load delay drops conversions by 7%. We obsess over performance because every millisecond you waste is revenue walking out the door.
-        </div>
-      </li>
-      <li class="reveal rd3">
-        <span class="fact-icon">03</span>
-        <div>
-          <span class="fact-bold">3 Seconds to Win or Lose</span>
-          Visitors decide whether to stay or bounce in under 3 seconds. We design for that exact moment — every single time.
-        </div>
-      </li>
-      <li class="reveal rd4">
-        <span class="fact-icon">04</span>
-        <div>
-          <span class="fact-bold">Local Business, Global Reach</span>
-          A strong website turns a local operation into a worldwide brand. We've helped clients across multiple countries do exactly that — without touching their overhead.
-        </div>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ═══ REVIEWS ═══ -->
-
-<section id="reviews">
-  <div class="reviews-header">
-    <div class="section-tag reveal" style="justify-content:center;">// CLIENT INTEL</div>
-    <h2 class="section-title reveal rd1" style="font-family:'Orbitron',monospace;font-size:clamp(36px,6vw,72px);line-height:.9;font-weight:900;">WHAT THEY <span class="c">SAY.</span></h2>
-  </div>
-  <div class="reviews-track-outer">
-    <div class="reviews-track" id="rev-track">
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Honestly wasn't sure what to expect — we'd been burned before. These guys listened to exactly what we needed and came back with something way beyond what I had in my head. The site basically sells for us now."</div>
-        <div class="review-author"><div class="review-avatar">MR</div><div><div class="review-name">Marcus R.</div><div class="review-company">// Apex Fitness Co.</div></div></div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"The animations and design quality blew me away. My old site was honestly embarrassing — now I send people there first thing. Saw a real jump in inquiries within the first two weeks of going live."</div>
-        <div class="review-author"><div class="review-avatar">DK</div><div><div class="review-name">Diana K.</div><div class="review-company">// Studio Kova Design</div></div></div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"I run a construction company — didn't think a website could move the needle for us. I was completely wrong. We've already landed two contracts directly from the site since it launched. Wish I'd done this sooner."</div>
-        <div class="review-author"><div class="review-avatar">JT</div><div><div class="review-name">James T.</div><div class="review-company">// Trident Build Group</div></div></div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Super communicative the whole way through. Never left me guessing where things were at. The end product looks like it cost five times what I paid. I keep sending people to the site just to show it off."</div>
-        <div class="review-author"><div class="review-avatar">PL</div><div><div class="review-name">Priya L.</div><div class="review-company">// Luminary Skincare</div></div></div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"Small restaurant, wasn't sure a high-end site was worth it. Now we get reservation requests through the site every single week. The mobile version especially — that's where most of our new customers come from."</div>
-        <div class="review-author"><div class="review-avatar">CN</div><div><div class="review-name">Carlos N.</div><div class="review-company">// Casa Nativa Restaurant</div></div></div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <div class="review-text">"They got the assignment immediately. Gave them a rough idea and they ran with it — delivered something I genuinely love. Fast, no drama, clean code. This is the agency I'll use for every project going forward."</div>
-        <div class="review-author"><div class="review-avatar">AW</div><div><div class="review-name">Alex W.</div><div class="review-company">// Wrenfield Consulting</div></div></div>
-      </div>
-      <!-- Duplicate for seamless loop -->
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"Honestly wasn't sure what to expect — we'd been burned before. These guys listened to exactly what we needed and came back with something way beyond what I had in my head. The site basically sells for us now."</div><div class="review-author"><div class="review-avatar">MR</div><div><div class="review-name">Marcus R.</div><div class="review-company">// Apex Fitness Co.</div></div></div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"The animations and design quality blew me away. My old site was honestly embarrassing — now I send people there first thing. Saw a real jump in inquiries within the first two weeks of going live."</div><div class="review-author"><div class="review-avatar">DK</div><div><div class="review-name">Diana K.</div><div class="review-company">// Studio Kova Design</div></div></div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"I run a construction company — didn't think a website could move the needle for us. I was completely wrong. We've already landed two contracts directly from the site since it launched. Wish I'd done this sooner."</div><div class="review-author"><div class="review-avatar">JT</div><div><div class="review-name">James T.</div><div class="review-company">// Trident Build Group</div></div></div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"Super communicative the whole way through. Never left me guessing where things were at. The end product looks like it cost five times what I paid. I keep sending people to the site just to show it off."</div><div class="review-author"><div class="review-avatar">PL</div><div><div class="review-name">Priya L.</div><div class="review-company">// Luminary Skincare</div></div></div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"Small restaurant, wasn't sure a high-end site was worth it. Now we get reservation requests through the site every single week. The mobile version especially — that's where most of our new customers come from."</div><div class="review-author"><div class="review-avatar">CN</div><div><div class="review-name">Carlos N.</div><div class="review-company">// Casa Nativa Restaurant</div></div></div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><div class="review-text">"They got the assignment immediately. Gave them a rough idea and they ran with it — delivered something I genuinely love. Fast, no drama, clean code. This is the agency I'll use for every project going forward."</div><div class="review-author"><div class="review-avatar">AW</div><div><div class="review-name">Alex W.</div><div class="review-company">// Wrenfield Consulting</div></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ CONTACT ═══ -->
-
-<section id="contact">
-  <canvas id="contact-canvas"></canvas>
-  <div class="contact-inner">
-    <div class="section-tag reveal" style="justify-content:center;">// INITIATE CONTACT</div>
-    <h2 class="contact-title reveal rd1">LET'S<br><span class="c">BUILD</span><br>SOMETHING.</h2>
-    <p class="contact-sub reveal rd2">Whether you're starting from scratch or ready to upgrade what you have — let's make something you're proud to show the world.</p>
-    <div class="contact-methods reveal rd3">
-      <a href="mailto:siersmedia@gmail.com" class="contact-link">
-        <span>✉</span><span>siersmedia@gmail.com</span>
-      </a>
-      <a href="https://www.instagram.com/siersmedia" target="_blank" class="contact-link">
-        <span>◈</span><span>@siersmedia</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-logo">SIERS<span class="dot">.</span>MEDIA</div>
-  <div class="footer-copy">© 2025 SIERS MEDIA — FOUNDED BY SIER LOPEZ & BRANDON SUMI</div>
-  <a href="https://www.instagram.com/siersmedia" target="_blank" class="footer-ig">Instagram ↗</a>
-</footer>
-
-<script>
-// ── CURSOR ──
-const cur = document.getElementById('cur');
-const dot = cur.querySelector('.cur-dot');
-const ring = cur.querySelector('.cur-ring');
-const ch = cur.querySelector('.cur-cross-h');
-const cv = cur.querySelector('.cur-cross-v');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function ac(){
-  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
-  dot.style.left=mx+'px';dot.style.top=my+'px';
-  ch.style.left=mx+'px';ch.style.top=my+'px';
-  cv.style.left=mx+'px';cv.style.top=my+'px';
-  ring.style.left=rx+'px';ring.style.top=ry+'px';
-  requestAnimationFrame(ac);
-})();
-
-// ── PROGRESS + NAV ──
-const pb=document.getElementById('progress');
-const nav=document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  pb.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
-  nav.classList.toggle('scrolled',window.scrollY>60);
-});
-
-// ── HUD TIME ──
-const hudTime=document.getElementById('hud-time');
-function tick(){
-  const n=new Date();
-  const pad=x=>String(x).padStart(2,'0');
-  hudTime.textContent=`SYS:${n.getFullYear()}.${pad(n.getMonth()+1)}.${pad(n.getDate())} // ${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())} UTC`;
-}
-tick();setInterval(tick,1000);
-
-// ── SMOOTH SCROLL ──
-function smoothTo(id,dur){
-  const t=document.getElementById(id);
-  const s=window.scrollY;
-  const e=t.getBoundingClientRect().top+s;
-  const d=e-s;
-  let st=null;
-  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  function step(now){
-    if(!st)st=now;
-    const el=now-st;
-    const p=Math.min(el/dur,1);
-    window.scrollTo(0,s+d*ease(p));
-    if(p<1)requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-document.getElementById('start-project-btn').addEventListener('click',e=>{e.preventDefault();smoothTo('contact',700);});
-document.getElementById('view-services-btn').addEventListener('click',e=>{e.preventDefault();smoothTo('services',600);});
-document.querySelectorAll('.nav-links a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{
-    e.preventDefault();
-    const id=a.getAttribute('href').slice(1);
-    smoothTo(id,650);
-  });
-});
-
-// ── REVEAL ──
-const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
-const co=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.12});
-document.querySelectorAll('.service-card').forEach(c=>co.observe(c));
-
-// ── COUNTER ANIMATION ──
-function animCount(el,target,suffix){
-  let cur=0;
-  const inc=target/60;
-  const t=setInterval(()=>{
-    cur+=inc;
-    if(cur>=target){cur=target;clearInterval(t);}
-    el.textContent=Math.floor(cur)+(suffix||'');
-  },24);
-}
-const numObs=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){
-      const el=e.target;
-      const t=parseInt(el.dataset.target);
-      if(!isNaN(t)){animCount(el,t,t===15?'+':'+');}
-      numObs.unobserve(el);
-    }
-  });
-},{threshold:.5});
-document.querySelectorAll('.hud-num[data-target]').forEach(el=>numObs.observe(el));
-
-// helper
-function getSP(s){
-  const r=s.getBoundingClientRect(),vh=window.innerHeight;
-  return Math.max(0,Math.min(1,(vh-r.top)/(vh+r.height)));
-}
-
-// ══════════════════════════════
-//  HERO CANVAS — warp tunnel + matrix particles
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('hero-canvas');
-  const ctx=c.getContext('2d');
-  let W,H,stars=[],matrix=[];
-
-  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;initAll();}
-
-  function initAll(){
-    stars=Array(280).fill(0).map(()=>mkStar());
-    matrix=Array(60).fill(0).map(()=>({
-      x:Math.random()*W,
-      y:Math.random()*H,
-      speed:2+Math.random()*4,
-      chars:[],
-      len:5+Math.floor(Math.random()*20),
-      opacity:0.1+Math.random()*0.3
-    }));
-  }
-  function mkStar(){
-    return {
-      x:(Math.random()-.5)*W*3,
-      y:(Math.random()-.5)*H*3,
-      z:Math.random()*W,
-      pz:0,
-      type:Math.random()>.8?'hex':'dot'
-    };
-  }
-
-  const CODE_CHARS='01アイウエオカキクケコサシスセソタチツテトナニヌネノABCDEFGHIJKLMNOPQRSTUVWXYZ<>[]{}|/\\+=';
-
-  resize();window.addEventListener('resize',resize);
-
-  let t=0;
-  function loop(){
-    t+=.5;
-    ctx.clearRect(0,0,W,H);
-
-    // BG gradient
-    const bg=ctx.createRadialGradient(W/2,H*.6,0,W/2,H*.6,W*.7);
-    bg.addColorStop(0,'rgba(0,18,30,0.95)');
-    bg.addColorStop(1,'rgba(0,0,0,1)');
-    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
-
-    // Horizon glow
-    const hg=ctx.createLinearGradient(0,H*.55,0,H*.75);
-    hg.addColorStop(0,'rgba(0,255,231,0.04)');
-    hg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=hg;ctx.fillRect(0,H*.55,W,H*.45);
-
-    // Grid perspective
-    ctx.save();
-    ctx.globalAlpha=0.35;
-    const gy=H*.65;
-    const vanX=W/2,vanY=H*.38;
-    ctx.strokeStyle='rgba(0,255,231,0.12)';ctx.lineWidth=.5;
-    for(let i=-18;i<=18;i++){
-      const bx=vanX+i*(W/14);
-      ctx.beginPath();ctx.moveTo(vanX,vanY);ctx.lineTo(bx,gy+200);ctx.stroke();
-    }
-    for(let j=0;j<14;j++){
-      const pct=j/13;
-      const yy=vanY+(gy+200-vanY)*Math.pow(pct,.7);
-      const hw=Math.abs(W/2-vanX+(W/14)*18*pct);
-      ctx.beginPath();ctx.moveTo(vanX-hw,yy);ctx.lineTo(vanX+hw,yy);ctx.stroke();
-    }
-    ctx.restore();
-
-    // Matrix rain
-    const prog=getSP(document.getElementById('hero'));
-    matrix.forEach(m=>{
-      ctx.save();
-      ctx.globalAlpha=m.opacity*(1-prog*0.5);
-      ctx.font='11px Share Tech Mono, monospace';
-      for(let i=0;i<m.len;i++){
-        if(!m.chars[i])m.chars[i]=CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)];
-        const alpha=1-i/m.len;
-        ctx.fillStyle=i===0?`rgba(255,255,255,${alpha})`:`rgba(0,255,231,${alpha*0.7})`;
-        ctx.fillText(m.chars[i],m.x,m.y-i*14);
-        if(Math.random()<.06)m.chars[i]=CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)];
-      }
-      ctx.restore();
-      m.y+=m.speed;
-      if(m.y-m.len*14>H){m.y=-20;m.x=Math.random()*W;}
-    });
-
-    // Warp stars
-    const speed=0.8+prog*2.5;
-    stars.forEach(s=>{
-      s.pz=s.z;s.z-=speed;
-      if(s.z<=0){Object.assign(s,mkStar());s.z=W;s.pz=s.z;}
-      const sx=(s.x/s.z)*W/2+W/2;
-      const sy=(s.y/s.z)*H/2+H/2;
-      const px=(s.x/s.pz)*W/2+W/2;
-      const py=(s.y/s.pz)*H/2+H/2;
-      const sz=Math.max(.4,(1-s.z/W)*3);
-      const br=1-s.z/W;
-
-      if(s.type==='hex'){
-        ctx.save();
-        ctx.globalAlpha=br*.8;
-        ctx.strokeStyle=`rgba(0,255,231,${br})`;
-        ctx.lineWidth=.5;
-        ctx.beginPath();
-        for(let i=0;i<6;i++){
-          const a=i/6*Math.PI*2;
-          const hx=sx+Math.cos(a)*sz*2;
-          const hy=sy+Math.sin(a)*sz*2;
-          i===0?ctx.moveTo(hx,hy):ctx.lineTo(hx,hy);
-        }
-        ctx.closePath();ctx.stroke();
-        ctx.restore();
-      } else {
-        ctx.beginPath();
-        ctx.moveTo(px,py);ctx.lineTo(sx,sy);
-        ctx.strokeStyle=`rgba(0,255,231,${br*.6})`;
-        ctx.lineWidth=sz;ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(sx,sy,sz*.8,0,Math.PI*2);
-        ctx.fillStyle=`rgba(180,255,250,${br})`;
-        ctx.fill();
-      }
-    });
-
-    // Orbiting particles
-    for(let i=0;i<3;i++){
-      const angle=t*.008+i*(Math.PI*2/3);
-      const ox=W/2+Math.cos(angle)*W*.32;
-      const oy=H/2+Math.sin(angle)*(H*.18);
-      const rg=ctx.createRadialGradient(ox,oy,0,ox,oy,30);
-      rg.addColorStop(0,'rgba(0,255,231,0.08)');
-      rg.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=rg;ctx.beginPath();ctx.arc(ox,oy,30,0,Math.PI*2);ctx.fill();
-    }
-
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-// ══════════════════════════════
-//  WHY CANVAS — constellation network
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('why-canvas');
-  const ctx=c.getContext('2d');
-  let W,H,pts=[];
-  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;pts=Array(80).fill(0).map(()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4}));}
-  resize();window.addEventListener('resize',resize);
-  function loop(){
-    ctx.clearRect(0,0,W,H);
-    const sec=document.getElementById('why');
-    if(!sec||!sec.getBoundingClientRect||sec.getBoundingClientRect().bottom<0){requestAnimationFrame(loop);return;}
-    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;});
-    for(let i=0;i<pts.length;i++){
-      for(let j=i+1;j<pts.length;j++){
-        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
-          ctx.strokeStyle=`rgba(0,255,231,${(1-d/120)*.08})`;ctx.lineWidth=.5;ctx.stroke();
-        }
-      }
-      ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,1.2,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,255,231,0.25)';ctx.fill();
-    }
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-// ══════════════════════════════
-//  FOUNDERS CANVAS — orbital rings
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('founders-canvas');
-  const ctx=c.getContext('2d');
-  let W,H;
-  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
-  resize();window.addEventListener('resize',resize);
-  let t=0;
-  function loop(){
-    t+=.005;
-    ctx.clearRect(0,0,W,H);
-    const rings=[
-      {cx:W*.15,cy:H*.5,rx:200,ry:60,speed:.4,color:'rgba(0,255,231,0.04)'},
-      {cx:W*.85,cy:H*.5,rx:180,ry:55,speed:-.3,color:'rgba(255,0,60,0.03)'},
-      {cx:W*.5,cy:H*.2,rx:300,ry:40,speed:.2,color:'rgba(0,255,231,0.025)'},
-    ];
-    rings.forEach(r=>{
-      ctx.save();
-      ctx.translate(r.cx,r.cy);
-      ctx.rotate(t*r.speed);
-      ctx.scale(1,r.ry/r.rx);
-      ctx.beginPath();
-      ctx.arc(0,0,r.rx,0,Math.PI*2);
-      ctx.strokeStyle=r.color;ctx.lineWidth=1;ctx.stroke();
-      // dot on ring
-      const dx=Math.cos(t*r.speed*3)*r.rx;
-      const dy=Math.sin(t*r.speed*3)*r.rx;
-      ctx.restore();
-      ctx.beginPath();
-      ctx.arc(r.cx+dx,r.cy+dy*(r.ry/r.rx),2,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,255,231,0.5)';ctx.fill();
-    });
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-// ══════════════════════════════
-//  SERVICES CANVAS — hex grid
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('services-canvas');
-  const ctx=c.getContext('2d');
-  let W,H;
-  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
-  resize();window.addEventListener('resize',resize);
-  let t=0;
-  function hex(x,y,r,fill,stroke){
-    ctx.beginPath();
-    for(let i=0;i<6;i++){
-      const a=i/6*Math.PI*2-Math.PI/6;
-      const px=x+Math.cos(a)*r,py=y+Math.sin(a)*r;
-      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
-    }
-    ctx.closePath();
-    if(fill){ctx.fillStyle=fill;ctx.fill();}
-    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.5;ctx.stroke();}
-  }
-  function loop(){
-    t+=.005;
-    ctx.clearRect(0,0,W,H);
-    const R=44,cols=Math.ceil(W/(R*1.73))+2,rows=Math.ceil(H/(R*1.5))+2;
-    for(let row=0;row<rows;row++){
-      for(let col=0;col<cols;col++){
-        const hx=col*R*1.73+(row%2===1?R*.865:0)-R;
-        const hy=row*R*1.5-R;
-        const d=Math.sqrt((hx-W/2)**2+(hy-H/2)**2);
-        const pulse=Math.sin(d*.012-t*2)*.5+.5;
-        const alpha=pulse*.04;
-        hex(hx,hy,R-2,`rgba(0,255,231,${alpha})`,`rgba(0,255,231,${alpha*2})`);
-      }
-    }
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-// ══════════════════════════════
-//  MATTERS CANVAS — plasma / aurora
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('matters-canvas');
-  const ctx=c.getContext('2d');
-  let W,H;
-  function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}
-  resize();window.addEventListener('resize',resize);
-  let t=0;
-  function loop(){
-    t+=.008;
-    ctx.clearRect(0,0,W,H);
-    // aurora bands
-    for(let i=0;i<4;i++){
-      const x=W/2+Math.sin(t*.4+i*1.3)*W*.3;
-      const y=H*.3+Math.cos(t*.3+i*.9)*H*.2;
-      const rg=ctx.createRadialGradient(x,y,0,x,y,W*.35);
-      const col=i%2===0?'0,255,231':'255,0,60';
-      rg.addColorStop(0,`rgba(${col},0.04)`);
-      rg.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
-    }
-    // grid dots
-    const sp=30;
-    for(let x=0;x<W;x+=sp){
-      for(let y=0;y<H;y+=sp){
-        const p=Math.sin(x*.04+t)*Math.cos(y*.04+t*.7);
-        const alpha=(p*.5+.5)*.06;
-        ctx.fillStyle=`rgba(0,255,231,${alpha})`;
-        ctx.fillRect(x,y,1,1);
-      }
-    }
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-
-// ══════════════════════════════
-//  CONTACT CANVAS — vortex
-// ══════════════════════════════
-(function(){
-  const c=document.getElementById('contact-canvas');
-  const ctx=c.getContext('2d');
-  let W,H,pts=[];
-  function resize(){
-    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
-    pts=Array(120).fill(0).map((_,i)=>({
-      angle:i/120*Math.PI*2,
-      r:Math.random()*Math.min(W,H)*.45,
-      speed:(.001+Math.random()*.003)*(Math.random()>.5?1:-1),
-      size:Math.random()*1.5+.3,
-      type:Math.random()>.7?'hex':'dot'
-    }));
-  }
-  resize();window.addEventListener('resize',resize);
-  let t=0;
-  function loop(){
-    t+=.006;
-    ctx.clearRect(0,0,W,H);
-    // center glow
-    const cg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.min(W,H)*.4);
-    cg.addColorStop(0,'rgba(0,30,40,0.6)');cg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
-
-    // spinning ring lines
-    for(let ring=1;ring<=4;ring++){
-      const r=Math.min(W,H)*.08*ring;
-      ctx.beginPath();
-      ctx.arc(W/2,H/2,r,0,Math.PI*2);
-      ctx.strokeStyle=`rgba(0,255,231,${0.04/ring})`;
-      ctx.lineWidth=.5;ctx.stroke();
-      // tick marks
-      for(let i=0;i<ring*8;i++){
-        const a=i/(ring*8)*Math.PI*2+t*(ring%2===0?1:-1)*0.3;
-        const x1=W/2+Math.cos(a)*(r-4),y1=H/2+Math.sin(a)*(r-4);
-        const x2=W/2+Math.cos(a)*(r+4),y2=H/2+Math.sin(a)*(r+4);
-        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
-        ctx.strokeStyle=`rgba(0,255,231,0.1)`;ctx.lineWidth=.5;ctx.stroke();
-      }
-    }
-
-    pts.forEach(p=>{
-      p.angle+=p.speed;
-      const x=W/2+Math.cos(p.angle)*p.r;
-      const y=H/2+Math.sin(p.angle)*p.r*(H/W*1.2);
-      const alpha=(p.r/(Math.min(W,H)*.45))*.7;
-      if(p.type==='hex'){
-        ctx.save();
-        ctx.globalAlpha=alpha*.6;
-        ctx.strokeStyle='rgba(0,255,231,0.5)';
-        ctx.lineWidth=.5;
-        ctx.beginPath();
-        for(let i=0;i<6;i++){
-          const a=i/6*Math.PI*2+p.angle;
-          const hx=x+Math.cos(a)*p.size*2,hy=y+Math.sin(a)*p.size*2;
-          i===0?ctx.moveTo(hx,hy):ctx.lineTo(hx,hy);
-        }
-        ctx.closePath();ctx.stroke();
-        ctx.restore();
-      } else {
-        ctx.beginPath();ctx.arc(x,y,p.size,0,Math.PI*2);
-        ctx.fillStyle=`rgba(0,255,231,${alpha})`;ctx.fill();
-      }
-    });
-
-    // center reticle
-    const rl=20;
-    ctx.save();ctx.translate(W/2,H/2);ctx.rotate(t*.2);
-    for(let i=0;i<4;i++){
-      ctx.rotate(Math.PI/2);
-      ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(rl,0);
-      ctx.strokeStyle='rgba(0,255,231,0.4)';ctx.lineWidth=1;ctx.stroke();
-    }
-    ctx.restore();
-
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
-</script>
-
-</body>
-</html>
+#!/usr/bin/env python3
+“””
+ClipEngine — Auto Clip & Post to Instagram
+For: Neon clipping page (@wspsiers)
+Posts 20 clips/day, one at a time, never reposts
+“””
+
+import os
+import json
+import time
+import random
+import subprocess
+import sys
+from datetime import datetime, timedelta
+from pathlib import Path
+
+# ============================================================
+
+# EASY SETUP — CHANGE THESE
+
+# ============================================================
+
+INSTAGRAM_USERNAME = “wspsiers”       # Your Instagram username
+INSTAGRAM_PASSWORD = “YOUR_PASSWORD_HERE”  # Your Instagram password
+CLIPS_PER_DAY = 20                    # How many to post per day
+DELAY_BETWEEN_POSTS = 900             # Seconds between posts (15 min default)
+STREAMER_NAME = “Neon”               # Streamer name for captions
+
+# ============================================================
+
+STREAMS_FILE = “streams.txt”          # Add YouTube links here, one per line
+POSTED_FILE = “posted_clips.json”     # Tracks what’s been posted
+CLIPS_DIR = Path(“clips”)             # Where clips are saved
+CLIPS_DIR.mkdir(exist_ok=True)
+
+# Hashtags used by top clipping pages
+
+HASHTAGS = (
+“#neon #neonstreamer #twitch #twitchclips #twitchhighlights “
+“#streamhighlights #gaming #gamingclips #viralclips #fyp “
+“#foryou #foryoupage #gamingmoments #clutch #highlights “
+“#streamclips #gamingreels #twitchmoments #viral #explore”
+)
+
+# Caption templates that drive comments
+
+CAPTION_TEMPLATES = [
+“this {streamer} clip is INSANE 😭🔥 comment what you think happened next 👇”,
+“bro {streamer} really said that 💀💀 drop a 🔥 if you saw this live”,
+“nobody is talking about this {streamer} moment 😱 comment YES if you want more”,
+“this {streamer} clip got me dead 😂 comment your reaction 👇”,
+“the chat when this happened 💀 {streamer} never misses. drop a ❤️”,
+“HOW did {streamer} do this 🤯 comment if you could do better”,
+“this {streamer} moment went crazy 🔥 tag someone who needs to see this”,
+“not {streamer} really doing this live 😭 comment 1 if you watched the full stream”,
+“{streamer} on another level rn 🎯 drop a 💯 if this is fire”,
+“the reaction says everything 😂 {streamer} is built different. comment 🔥 or 💀”,
+]
+
+def install_requirements():
+“”“Auto-install required packages”””
+packages = [“yt-dlp”, “instagrapi”, “moviepy”]
+for pkg in packages:
+print(f”Installing {pkg}…”)
+subprocess.run([sys.executable, “-m”, “pip”, “install”, pkg, “-q”], check=True)
+print(“✅ All packages installed\n”)
+
+def load_posted():
+if Path(POSTED_FILE).exists():
+with open(POSTED_FILE) as f:
+return set(json.load(f))
+return set()
+
+def save_posted(posted):
+with open(POSTED_FILE, “w”) as f:
+json.dump(list(posted), f)
+
+def load_streams():
+if not Path(STREAMS_FILE).exists():
+with open(STREAMS_FILE, “w”) as f:
+f.write(”# Add YouTube stream links here, one per line\n”)
+f.write(”# Example:\n”)
+f.write(”# https://youtube.com/watch?v=XXXXXXXXXXX\n”)
+print(f”📝 Created {STREAMS_FILE} — add your YouTube links there and restart.”)
+sys.exit(0)
+with open(STREAMS_FILE) as f:
+lines = [l.strip() for l in f.readlines() if l.strip() and not l.startswith(”#”)]
+return lines
+
+def get_video_duration(url):
+“”“Get video duration in seconds using yt-dlp”””
+result = subprocess.run(
+[“yt-dlp”, “–get-duration”, “–no-warnings”, url],
+capture_output=True, text=True
+)
+parts = result.stdout.strip().split(”:”)
+try:
+if len(parts) == 3:
+return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+elif len(parts) == 2:
+return int(parts[0]) * 60 + int(parts[1])
+else:
+return int(parts[0])
+except:
+return 14400  # Default 4 hours if can’t detect
+
+def download_stream(url, output_path):
+“”“Download stream at lower quality for speed”””
+print(f”  ⬇️  Downloading stream (this may take a while)…”)
+subprocess.run([
+“yt-dlp”,
+“-f”, “bestvideo[height<=720]+bestaudio/best[height<=720]”,
+“–merge-output-format”, “mp4”,
+“-o”, str(output_path),
+“–no-warnings”,
+url
+], check=True)
+print(f”  ✅ Downloaded: {output_path}”)
+
+def make_clip(input_path, start_sec, duration, output_path):
+“”“Cut and crop clip to vertical 9:16 using ffmpeg”””
+# Crop to vertical 9:16 from center of video
+subprocess.run([
+“ffmpeg”, “-y”,
+“-ss”, str(int(start_sec)),
+“-i”, str(input_path),
+“-t”, str(int(duration)),
+“-vf”, “crop=ih*9/16:ih,scale=1080:1920”,
+“-c:v”, “libx264”,
+“-preset”, “fast”,
+“-crf”, “23”,
+“-c:a”, “aac”,
+“-b:a”, “128k”,
+“-movflags”, “+faststart”,
+str(output_path),
+“-loglevel”, “error”
+], check=True)
+
+def find_viral_moments(duration, count=20):
+“””
+Find the best moments to clip.
+Spreads clips across the stream, biased toward middle/end
+where streams usually peak.
+“””
+moments = []
+# Avoid first 10 min and last 5 min
+safe_start = 600
+safe_end = duration - 300
+usable = safe_end - safe_start
+
+```
+# Bias toward middle and end (where good stuff happens)
+for i in range(count):
+    bias = random.choices(
+        ["early", "middle", "late"],
+        weights=[0.15, 0.40, 0.45]
+    )[0]
+    if bias == "early":
+        start = safe_start + random.uniform(0, usable * 0.33)
+    elif bias == "middle":
+        start = safe_start + random.uniform(usable * 0.25, usable * 0.65)
+    else:
+        start = safe_start + random.uniform(usable * 0.55, usable)
+
+    # Vary clip length between 20-55 seconds (optimal for Reels)
+    clip_duration = random.randint(20, 55)
+
+    # Make sure clip doesn't go past end
+    if start + clip_duration > safe_end:
+        start = safe_end - clip_duration - 5
+
+    moments.append((int(start), clip_duration))
+
+# Sort by timestamp, remove duplicates too close together
+moments.sort()
+filtered = [moments[0]]
+for m in moments[1:]:
+    if m[0] - filtered[-1][0] > 60:  # At least 60s apart
+        filtered.append(m)
+
+# Fill back up to count if we filtered too many
+while len(filtered) < count:
+    start = random.randint(safe_start, int(safe_end - 55))
+    filtered.append((start, random.randint(20, 55)))
+
+return filtered[:count]
+```
+
+def generate_caption():
+template = random.choice(CAPTION_TEMPLATES)
+caption = template.format(streamer=STREAMER_NAME)
+return f”{caption}\n.\n.\n.\n{HASHTAGS}”
+
+def post_to_instagram(clip_path, caption):
+“”“Post a single video clip to Instagram Reels”””
+from instagrapi import Client
+from instagrapi.exceptions import LoginRequired
+
+```
+cl = Client()
+session_file = Path("instagram_session.json")
+
+# Load saved session or login fresh
+if session_file.exists():
+    try:
+        cl.load_settings(session_file)
+        cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+        print("  📱 Logged in via saved session")
+    except LoginRequired:
+        print("  🔑 Session expired, logging in fresh...")
+        cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+        cl.dump_settings(session_file)
+else:
+    print("  🔑 Logging into Instagram (first time)...")
+    cl.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+    cl.dump_settings(session_file)
+    print("  ✅ Session saved for next time")
+
+# Post as Reel
+print(f"  📤 Uploading to Instagram Reels...")
+media = cl.clip_upload(
+    Path(clip_path),
+    caption=caption
+)
+print(f"  ✅ Posted! Media ID: {media.pk}")
+return str(media.pk)
+```
+
+def process_stream(url, stream_index, posted):
+“”“Download a stream and create 20 clips from it”””
+stream_id = f”stream_{stream_index}_{url[-11:]}”
+video_path = CLIPS_DIR / f”{stream_id}_full.mp4”
+
+```
+# Check if already downloaded
+if not video_path.exists():
+    download_stream(url, video_path)
+else:
+    print(f"  ♻️  Using cached download: {video_path.name}")
+
+# Get duration
+duration = get_video_duration(url)
+print(f"  ⏱  Stream duration: {duration//3600}h {(duration%3600)//60}m")
+
+# Find viral moments
+moments = find_viral_moments(duration, count=20)
+clips = []
+
+print(f"  ✂️  Creating 20 clips...")
+for i, (start, dur) in enumerate(moments):
+    clip_id = f"{stream_id}_clip{i:02d}_s{start}"
+
+    if clip_id in posted:
+        print(f"    ⏭  Clip {i+1} already posted, skipping")
+        continue
+
+    clip_path = CLIPS_DIR / f"{clip_id}.mp4"
+
+    if not clip_path.exists():
+        try:
+            make_clip(video_path, start, dur, clip_path)
+            print(f"    ✅ Clip {i+1:02d} — {start//60}:{start%60:02d} ({dur}s)")
+        except Exception as e:
+            print(f"    ❌ Clip {i+1} failed: {e}")
+            continue
+
+    clips.append((clip_id, clip_path))
+
+return clips
+```
+
+def main():
+print(”=” * 50)
+print(”  ClipEngine — Neon Clipping Auto-Poster”)
+print(”=” * 50)
+print()
+
+```
+# Install packages on first run
+try:
+    import instagrapi
+    import moviepy
+except ImportError:
+    print("📦 First run — installing required packages...\n")
+    install_requirements()
+
+# Check ffmpeg
+result = subprocess.run(["ffmpeg", "-version"], capture_output=True)
+if result.returncode != 0:
+    print("❌ ffmpeg not found!")
+    print("   Install it: https://ffmpeg.org/download.html")
+    print("   Or on Mac: brew install ffmpeg")
+    print("   Or on Ubuntu: sudo apt install ffmpeg")
+    sys.exit(1)
+
+if INSTAGRAM_PASSWORD == "YOUR_PASSWORD_HERE":
+    print("❌ You haven't set your Instagram password yet!")
+    print(f"   Open this file and change INSTAGRAM_PASSWORD on line 20")
+    sys.exit(1)
+
+streams = load_streams()
+if not streams:
+    print(f"❌ No streams found in {STREAMS_FILE}")
+    print("   Add YouTube links (one per line) and restart.")
+    sys.exit(1)
+
+print(f"📺 Found {len(streams)} stream(s) to process")
+print(f"📅 Will post {CLIPS_PER_DAY} clips/day ({len(streams) * CLIPS_PER_DAY} total)")
+print(f"⏱  {DELAY_BETWEEN_POSTS//60} minutes between each post")
+print()
+
+posted = load_posted()
+all_clips = []
+
+# Process all streams and build clip queue
+for i, url in enumerate(streams):
+    print(f"\n🎬 Processing Stream {i+1}/{len(streams)}: {url}")
+    try:
+        clips = process_stream(url, i, posted)
+        all_clips.extend(clips)
+        print(f"  📦 {len(clips)} clips ready from stream {i+1}")
+    except Exception as e:
+        print(f"  ❌ Stream {i+1} failed: {e}")
+        continue
+
+if not all_clips:
+    print("\n❌ No clips to post. All may already be posted or processing failed.")
+    sys.exit(0)
+
+print(f"\n🚀 Starting to post — {len(all_clips)} clips queued")
+print(f"   One at a time, {DELAY_BETWEEN_POSTS//60} min apart\n")
+
+posted_today = 0
+day_start = datetime.now()
+
+for clip_id, clip_path in all_clips:
+    # Reset daily counter at midnight
+    now = datetime.now()
+    if now.date() > day_start.date():
+        posted_today = 0
+        day_start = now
+
+    # Enforce daily limit
+    if posted_today >= CLIPS_PER_DAY:
+        # Wait until next day
+        tomorrow = (now + timedelta(days=1)).replace(hour=8, minute=0, second=0)
+        wait_sec = (tomorrow - now).total_seconds()
+        print(f"\n😴 Daily limit reached ({CLIPS_PER_DAY} posts). Waiting until tomorrow 8am...")
+        time.sleep(wait_sec)
+        posted_today = 0
+        day_start = datetime.now()
+
+    if clip_id in posted:
+        continue
+
+    print(f"\n📤 Posting clip {posted_today + 1}/{CLIPS_PER_DAY} — {clip_path.name}")
+    caption = generate_caption()
+
+    try:
+        post_to_instagram(clip_path, caption)
+        posted.add(clip_id)
+        save_posted(posted)
+        posted_today += 1
+
+        print(f"  ✅ Posted successfully! ({posted_today}/{CLIPS_PER_DAY} today)")
+        print(f"  💤 Waiting {DELAY_BETWEEN_POSTS//60} minutes before next post...")
+        time.sleep(DELAY_BETWEEN_POSTS)
+
+    except Exception as e:
+        print(f"  ❌ Post failed: {e}")
+        print(f"  ⏳ Waiting 5 minutes before retrying...")
+        time.sleep(300)
+
+print("\n🎉 All clips posted! Add more streams to streams.txt and restart.")
+```
+
+if **name** == “**main**”:
+main()
